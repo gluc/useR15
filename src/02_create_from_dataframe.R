@@ -1,0 +1,5 @@
+pres <- read.csv('data/data.csv')
+colnames(pres)
+head(pres)
+pres$pathString <- paste(pres$Session, pres$Room, pres$Speaker, sep="|")
+presTree <- as.Node(pres[,c("pathString", "Speaker", "Presentation")], pathDelimiter = "|")
