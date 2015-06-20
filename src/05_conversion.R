@@ -17,5 +17,12 @@ cat(toJSON(lol))
 
 #Convert to XML
 
-#Convert to dendrogram
-as.dendrogram(useRtree)
+
+#convert from dendrogram
+hc <- hclust(dist(USArrests), "ave")
+dend1 <- as.dendrogram(hc)
+node <- as.Node(dend1)
+
+print(node, "height", "midpoint", "value")
+
+dend2 <- as.dendrogram(node)

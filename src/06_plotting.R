@@ -1,0 +1,2 @@
+#dendrogram
+as.dendrogram(node)
