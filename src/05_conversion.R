@@ -37,3 +37,6 @@ plot(dend2)
 #write with Newick notation
 useRtree$Find("Session 3")$ToNewick()
 
+
+#convert from rpart
+
