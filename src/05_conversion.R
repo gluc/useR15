@@ -33,3 +33,7 @@ print(node, "height", "midpoint", "value")
 # ... and back
 dend2 <- as.dendrogram(node)
 plot(dend2)
+
+#write with Newick notation
+useRtree$Find("Session 3")$ToNewick()
+

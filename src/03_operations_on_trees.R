@@ -1,5 +1,21 @@
+#counting
+useRtree$count
+useRtree$totalCount
+useRtree$leafCont
+
+
 #find a specific node
 ritz <- useRtree$Find("Session 5", "Musiksalen", "Christian Ritz")
+
+#and navigate
+ritz$parent
+ritz$root
+
+#find attributes
+ritz$fields
+
+#find attributes anywhere in the tree
+ritz$fieldsAll
 
 #call attributes
 ritz$presentation

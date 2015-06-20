@@ -1,4 +1,4 @@
-﻿session,start,end,sessionName,room,seats,speaker,presentation
+session,start,end,sessionName,room,seats,speaker,presentation
 Session 1,01.07.2015 10:30,01.07.2015 12:00,Kaleidoscope 1,Aalborghallen,790,Federico Marini,flowcatchR: A user-friendly workflow solution for the analysis of time-lapse cell flow imaging data 
 Session 1,01.07.2015 10:30,01.07.2015 12:00,Kaleidoscope 1,Aalborghallen,790,Jonathan Clayden,Image processing and alignment with RNiftyReg and mmand 
 Session 1,01.07.2015 10:30,01.07.2015 12:00,Kaleidoscope 1,Aalborghallen,790,Carel F. W. Peeters,rags2ridges: Ridge estimation and graphical modeling for high-dimensional precision matrices 
