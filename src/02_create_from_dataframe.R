@@ -1,6 +1,6 @@
 library(data.tree)
 #useRdf <- read.csv('data/useR15.csv', stringsAsFactors = FALSE)
-useRdf <- read.csv('../useR15/data/useR15.csv', stringsAsFactors = FALSE)
+useRdf <- read.csv('../useR15/data/useR15.csv', stringsAsFactors = FALSE, encoding = "UTF-8")
 useRdf$rating <- sample(1:10, nrow(useRdf), replace=T)
 
 head(useRdf[,-ncol(useRdf)])
