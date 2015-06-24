@@ -8,34 +8,29 @@ pfodf$pathString <- paste("portfolio", pfodf$AssetCategory, pfodf$AssetClass, pf
 
 pfo <- as.Node(pfodf)
 
-pfo$Get("Aggregate", "Weight", sum, assign = "Weight")
+pfo$Get(Aggregate, "Weight", sum, assign = "Weight")
 
 
-weightOfParent <- function(x) {
-  myWeight <- x$Aggregate("Weight", sum)
-  if(x$isRoot) return (myWeight)
-  parentWeight <- x$parent$Aggregate("Weight", sum)
-  return (myWeight / parentWeight)
+pfo$Get(function(x) x$Weight / x$parent$Weight, assign = "WoP")
+
+pfo$formatters$WoP <- function(x) FormatPercent(x, digits = 1)
+pfo$formatters$Weight <- FormatPercent
+
+pfo$formatters$Duration <- function(x) {
+  if (x != 0) res <- FormatFixedDecimal(x, digits = 1)
+  else res <- ""
+  return (res)
 }
 
-pfo$Get(weightOfParent, assign = "wop")
-
-DurationContribution <- function(x) {
-  if(x$isLeaf) {
-    if(is.null(x$Duration)) return (0)
-    contrib <- x$Weight * x$Duration
-    return (contrib)
-  }
-  contrib <- x$Aggregate(DurationContribution, sum) * x$Weight
-  return (contrib)
-}
-
-pfo$Get(DurationContribution, assign = "DurationContrib")
+pfo$Get(attribute = Aggregate, 
+        function(x) x$Weight * x$Duration / x$parent$Weight, 
+        fun = function(x) sum(x, na.rm = TRUE), 
+        assign = "Duration")
 
 print(pfo, 
-              weight = "Weight", 
-              wop = "wop",
-              duration = "Duration",
+              "Weight", 
+              "WoP",
+              "Duration",
               filterFun = function(x) !x$isLeaf)
 
 
