@@ -1,0 +1,40 @@
+---
+title: "data.frame"
+output: html_document
+---
+
+```{r set-options, echo=FALSE, cache=FALSE}
+options(width=120)
+```
+
+Load in the tabular data from csv:
+
+```{r}
+library(data.tree)
+useRdf <- read.csv('../data/useR15.csv', stringsAsFactors = FALSE, encoding = "UTF-8")
+head(useRdf[,c("session", "start", "sessionName", "room", "seats", "speaker")])
+```
+
+Convert it to a data.tree
+
+```{r}
+#1. the pathString defines the hierarchy:
+useRdf$pathString <- paste("useR", useRdf$session, useRdf$room, useRdf$speaker, sep="|")
+
+#2. advanced and optional: define which attributes go to which level in the tree
+#By default, they go to the leaf
+cols <- list(NULL,                                        #root
+             c('session', 'start', 'end', 'sessionName'), #session
+             c('room', 'seats')                           #room
+             ) 
+
+#3. convert to tree
+useRtree <- as.Node(useRdf, pathDelimiter = "|", colLevels = cols)
+
+
+print(useRtree, 
+      "start", "seats", 
+      filterFun = function(x) x$level < 4)
+
+```
+

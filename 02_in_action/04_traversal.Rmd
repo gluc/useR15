@@ -1,0 +1,84 @@
+---
+title: "traversal"
+output: html_document
+---
+
+```{r set-options, echo=FALSE, cache=FALSE}
+options(width=60)
+```
+
+```{r echo=FALSE, eval=TRUE}
+library(data.tree)
+useRdf <- read.csv('../data/useR15.csv', stringsAsFactors = FALSE, encoding = "UTF-8")
+
+useRdf$pathString <- paste("useR", useRdf$session, useRdf$room, useRdf$speaker, sep="|")
+
+cols <- list(NULL, 
+             c('session', 'start', 'end', 'sessionName'),
+             c('room', 'seats'))
+
+useR <- as.Node(useRdf, pathDelimiter = "|", colLevels = cols)
+
+```
+
+```{r}
+session2 <- useR$Find("Session 2")
+session2$Set(preo = 1:session2$totalCount)
+print(session2, "preo")
+```
+
+Compare this with post-order and level (breadth first):
+
+```{r}
+session2$Set(posto = 1:session2$totalCount, 
+             traversal = "post-order")
+session2$Set(lev = 1:session2$totalCount, 
+             traversal = "level")
+print(session2, "preo", "posto", "lev")
+```
+
+
+You can also collect data instead of setting data:
+
+```{r eval = FALSE}
+datamanagement <- session2$Find("Det lille Teater")
+datamanagement$Get("name")
+```
+
+```{r echo = FALSE}
+datamanagement <- session2$Find("Det lille Teater")
+as.vector(datamanagement$Get("name"))
+```
+
+
+Works also on functions:
+
+```{r eval=FALSE}
+toUpperName <- function(node) {
+  toupper(node$name)
+}
+
+datamanagement$Get(toUpperName)
+
+```
+
+```{r echo=FALSE}
+toUpperName <- function(node) {
+  toupper(node$name)
+}
+
+as.vector(datamanagement$Get(toUpperName))
+```
+
+
+And on actives, with pruning and filtering, and and and: 
+
+```{r eval=FALSE}
+useR$Get("totalCount", 
+         traversal = "level",
+         pruneFun = function(x) {
+           x$level != 3 || x$room == "Det lile Teater"
+         },
+         filterFun = function(x) !x$isLeaf)
+```
+

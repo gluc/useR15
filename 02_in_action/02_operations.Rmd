@@ -1,0 +1,100 @@
+---
+output: html_document
+---
+
+```{r set-options, echo=FALSE, cache=FALSE}
+options(width=60)
+```
+
+```{r echo=FALSE, eval=TRUE}
+library(data.tree)
+useRdf <- read.csv('../data/useR15.csv', 
+                   stringsAsFactors = FALSE, 
+                   encoding = "UTF-8")
+#useRdf <- read.csv('../useR15/data/useR15.csv', stringsAsFactors = FALSE, encoding = "UTF-8")
+
+useRdf$pathString <- paste("useR", useRdf$session, useRdf$room, useRdf$speaker, sep="|")
+
+cols <- list(NULL, 
+             c('session', 'start', 'end', 'sessionName'),
+             c('room', 'seats'))
+
+useR <- as.Node(useRdf, pathDelimiter = "|", colLevels = cols)
+
+```
+
+## Basic actives on nodes
+
+```{r}
+useR$isLeaf
+useR$isRoot
+useR$depth
+useR$count
+useR$totalCount
+useR$leafCount
+```
+
+## Navigation
+
+Navigate to a specific node:
+
+```{r}
+glur <- useR$Find("Session 2", 
+                  "Det lille Teater", 
+                  "Christoph Glur")
+```
+
+...and navigate relatively to it:
+
+```{r}
+glur$parent$name
+glur$root$name
+
+```
+
+## Attributes
+
+Find attributes:
+```{r}
+glur$fields
+glur$fieldsAll
+```
+
+... and access them:
+
+```{r}
+glur$presentation
+```
+
+Add new ones if you wish:
+
+```{r}
+glur$package <- 'data.tree'
+glur$fields
+glur$root$fieldsAll
+```
+
+## Create a deep copy
+
+```{r}
+useR2 <- useR$Clone()
+```
+
+## Prune
+
+```{r}
+myPrune <- function(x) {
+  return(x$level!=3 || x$room == 'Radiosalen')
+}
+
+useR2$Prune(pruneFun = myPrune)
+useR2$totalCount
+head(useR2$ToDataFrame(), n = 10)
+```
+
+## Sort
+
+```{r}
+useR$Sort("speaker")
+print(useR$Find("Session 2", "Det lille Teater"))
+```

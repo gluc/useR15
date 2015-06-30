@@ -1,0 +1,67 @@
+---
+output: html_document
+---
+
+## Create a tree programmatically
+
+Tree structure: 
+
+* level 1/root: useR! 2015 Sessions
+* level 2: session (name, start, end)
+* level 3: room (name, seats)
+* level 4: presentation (speaker, presentation name)
+
+```{r}
+
+library(data.tree)
+
+
+useR <- Node$new("UseR! Conference 2015")
+  session1 <- useR$AddChild("Session 1")
+    aalborghallen <- session1$AddChild("Aalborghallen")
+    aalborghallen$seats <- 790
+      p1 <- aalborghallen$AddChild("Federico Marini")
+      p2 <- aalborghallen$AddChild("Jonathan Clayden")
+      #... etc.
+    gaestsalen <- session1$AddChild("Gaestsalen")
+    gaestsalen$seats <- 149
+      p1 <- gaestsalen$AddChild("Costas Varsos")
+      #... etc.
+```
+
+Normally, you would do this in an algorithm.
+
+See:
+```{r eval = FALSE}
+vignette("ID3")
+```
+
+## OO-Style method calling
+
+```{r eval=FALSE}
+useR$ToList()
+```
+
+But you can still use "classical" R generics if you prefer. The following is equivalent:
+```{r eval = FALSE}
+as.list(useR)
+```
+
+## Reference Semantics
+  
+Nodes exhibit reference semantics:
+  
+```{r}
+session1$day <- "Wed"
+useR$Find("Session 1")$day
+```
+
+Equivalent operation with lists doesn't work:
+
+```{r}
+useRlist <- list()
+  session1list <- list()
+  useRlist$session1 <- session1list
+  session1list$day <- "Wed"
+useRlist$session1$day
+```
