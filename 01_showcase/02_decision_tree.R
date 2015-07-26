@@ -2,30 +2,26 @@ library(data.tree)
 library(yaml)
 
 #load from file
-fileName <- '../useR15/data/jennylind.yaml'
+fileName <- '../useR15/00_data/jennylind.yaml'
 l <- yaml.load_file(fileName)
 jl <- as.Node(l)
+print(jl, "type", "payoff", "p")
 
 #calculate decision tree
 
 payoff <- function(x) {
-  if (x$type == 'terminal') res <- x$payoff
-  else if (x$type == 'chance') res <- x$Aggregate(function(node) node$payoff * node$p, sum)
-  else if (x$type == 'decision') res <- x$Aggregate("payoff", max)
-  return (res)
+  if (x$type == 'chance') x$payoff <- Aggregate(x, function(node) node$payoff * node$p, sum)
+  else if (x$type == 'decision') x$payoff <- Aggregate(x, "payoff", max)
 }
 
-jl$Get(payoff, traversal = "post-order", assign = "payoff")
+jl$Do(payoff, traversal = "post-order", filterFun = isNotLeaf)
 
 decision <- function(x) {
-  if (x$type == 'decision') {
-    po <- sapply(x$children, function(child) child$payoff)
-    res <- names(po[po == x$payoff])
-  } else res <- NULL
-  return (res)
+  po <- sapply(x$children, function(child) child$payoff)
+  x$decision <- names(po[po == x$payoff])
 }
 
-jl$Get(decision, assign = "decision")
+jl$Do(decision, filterFun = function(x) x$type == 'decision')
 
 #Plot the decision tree whit ape
 
